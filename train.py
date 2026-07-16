@@ -197,8 +197,8 @@ def load_cached_split(
 if __name__=='__main__':
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-    epochs = 200
-    patience = 50
+    epochs = 100
+    patience = 20
     processed_dir = r"/home/huangzh/MODMA/EEG_128channels_ERP_processed_nos"
     dim = 32
     X_train, y_train, sid_train_raw, _ = load_cached_split(processed_dir, "train")
@@ -223,7 +223,7 @@ if __name__=='__main__':
     test_loader = DataLoader(CachedERPDataset(X_test, y_test, sid_test, "btc"), batch_size=16, shuffle=False, num_workers=4, pin_memory=True)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.AdamW(model.parameters(), lr=8e-5, weight_decay=1e-3)  # AdamW for better regularization
+    optimizer = optim.AdamW(model.parameters(), lr=1e-4, weight_decay=1e-3)  # AdamW for better regularization
     scheduler = CosineAnnealingLR(optimizer, 15)
     plateau_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5)  # 新增
     best_val_acc = 0
