@@ -76,9 +76,8 @@ def train_one_epoch(model, loader, optimizer, criterion, device, epoch, warmup_e
         correct += (pred == y).sum().item()
         total += y.size(0)
 
-    return total_loss / total, correct / total  # 简化日志，实际运行可加分解
-
-# 更新 evaluate：类似，但无 awl.backward (只计算)
+    return total_loss / total, correct / total  
+  
 @torch.no_grad()
 def evaluate(model, loader, criterion, device):
     model.eval()
