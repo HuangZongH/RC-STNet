@@ -179,18 +179,9 @@ class RegionConditionedSAFE(nn.Module):
             "region_conn": conn
         }
 
-
-# =========================
-# Margin Classifier
-# =========================
 def entropy_loss(logits):
     p = torch.softmax(logits, dim=1)
     return - (p * torch.log(p + 1e-8)).sum(dim=1).mean()
-
-
-
-
-# ---------- 新增：Subject Consistency Loss ----------
 
 
 def subject_consistency_loss(feats, subject_ids):
@@ -206,12 +197,6 @@ def subject_consistency_loss(feats, subject_ids):
             f = feats[idx]
             loss += torch.var(f, dim=0).mean()
     return loss / max(len(uniq), 1)
-
-
-
-
-# ---------- 修改：MarginClassifier（去攻击性） ----------
-
 
 class MarginClassifier(nn.Module):
     def __init__(self, in_dim, n_classes=2, s=20.0, m=0.0):
