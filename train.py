@@ -20,7 +20,7 @@ import torch.nn as nn
 import numpy as np
 import math
 from torch.utils.data import DataLoader
-from nnt5 import (
+from RC-STNet import (
 EEG_MDD_Model,
 entropy_loss,
 subject_consistency_loss
@@ -42,12 +42,12 @@ def intra_class_compactness(feat, labels):
         return torch.tensor(0.0, device=feat.device)
     return loss / count
 
-# 更新 train_one_epoch：添加分解损失和阶段控制
-def train_one_epoch(model, loader, optimizer, criterion, device, epoch, warmup_epochs=20, aux_start_epoch=10):  # 延长到20
+
+def train_one_epoch(model, loader, optimizer, criterion, device, epoch, warmup_epochs=20, aux_start_epoch=10):  
     model.train()
     model.label_ratio = min(0.5, epoch / warmup_epochs)
 
-    awl = AutomaticWeightedLoss(num=3).to(device)  # 新增
+    awl = AutomaticWeightedLoss(num=3).to(device)  
 
     total_loss, correct, total = 0, 0, 0
 
@@ -116,7 +116,7 @@ class AutomaticWeightedLoss(nn.Module):
         loss_sum = 0
         for i, loss in enumerate(losses):
             weighted_loss = 0.5 / (self.params[i] ** 2) * loss
-            regularization = torch.log(1 + self.params[i] ** 2)
+            regularization = torch.log(1 + self.params[i])
             loss_sum += weighted_loss + regularization
         return loss_sum
 
